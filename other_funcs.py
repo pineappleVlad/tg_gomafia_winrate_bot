@@ -1,7 +1,7 @@
 import pprint
 import unicodedata
 import re
-
+from unidecode import unidecode
 import requests
 from bs4 import BeautifulSoup
 from fake_headers import Headers
@@ -21,20 +21,22 @@ def game_handler(games_list, nickname, players_plays_dict):
         win_team = win_or_lose_check(game)
         rows = game.find_all('tr', class_='TableTournamentResultGame_table-tournament-result-game__item__SbL_M')
 
-        clean_row = unicodedata.normalize("NFKD", str(rows)).strip().lower()
-        clean_nick = unicodedata.normalize("NFKD", nickname).strip().lower()
+        # clean_row = unicodedata.normalize("NFKD", str(rows)).strip().lower()
+        # clean_nick = unicodedata.normalize("NFKD", nickname).strip().lower()
+        # pattern = re.compile(f'\\b{re.escape(clean_nick)}\\b')
+
+        clean_row = unidecode(str(rows)).strip().lower()
+        clean_nick = unidecode(nickname).strip().lower()
         pattern = re.compile(f'\\b{re.escape(clean_nick)}\\b')
 
         if not re.search(pattern, clean_row):
             continue
 
-        # if clean_nick not in clean_row:
-        #     continue
 
         for row in rows:
             columns = row.find_all('td')
             table_nick = columns[1].text.strip()
-            clean_table_nick = unicodedata.normalize("NFKD", table_nick).strip().lower()
+            clean_table_nick = unidecode(table_nick).strip().lower()
             role = columns[2].text
             win_lose = game_win_result(role, win_team)
             if clean_table_nick == clean_nick:
@@ -45,6 +47,7 @@ def game_handler(games_list, nickname, players_plays_dict):
 
         game_result = game_list_format(player_stat, nickname)
         players_plays_dict = game_list_result_handler(game_result, players_plays_dict)
+        pprint.pprint(players_plays_dict)
     return players_plays_dict
 
 

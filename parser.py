@@ -16,4 +16,3 @@ def gomafia_matchs_parse(id):
     result_list = all_stat(total_dict, nick)
     return result_list, nick
 
-
