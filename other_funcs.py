@@ -1,4 +1,6 @@
+import pprint
 import unicodedata
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -21,9 +23,13 @@ def game_handler(games_list, nickname, players_plays_dict):
 
         clean_row = unicodedata.normalize("NFKD", str(rows)).strip().lower()
         clean_nick = unicodedata.normalize("NFKD", nickname).strip().lower()
+        pattern = re.compile(f'\\b{re.escape(clean_nick)}\\b')
 
-        if clean_nick not in clean_row:
+        if not re.search(pattern, clean_row):
             continue
+
+        # if clean_nick not in clean_row:
+        #     continue
 
         for row in rows:
             columns = row.find_all('td')
