@@ -1,5 +1,3 @@
-import bs4
-import requests
 from bs4 import BeautifulSoup
 from other_funcs import get_request
 
@@ -55,7 +53,7 @@ def dict_handler(result_dict):
 
         total_dict[key] = [f'Совместных игр всего: {len(value)}']
         for element in value:
-            main_role, not_main_role, win_main = element[0], element[1], element[2]
+            not_main_role, main_role, win_main = element[0], element[1], element[3]
             if main_role == 'Мир' or main_role == 'Шер':
                 if not_main_role == 'Мир' or not_main_role == 'Шер':
                     monochrome_game_count_red += 1

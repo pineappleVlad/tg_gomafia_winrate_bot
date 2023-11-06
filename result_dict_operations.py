@@ -1,4 +1,3 @@
-import pprint
 import unicodedata
 from collections import OrderedDict
 
@@ -8,7 +7,7 @@ def all_stat(total_dict, nickname):
     biggest_red_wr = best_mono_red(total_dict)
     biggest_black_wr = best_mono_black(total_dict)
     best_against_wr, worst_against_wr = best_against(total_dict)
-    result_list = ([biggest_plays, biggest_total_wr, biggest_red_wr, biggest_black_wr, worst_total_wr, best_against_wr, worst_against_wr])
+    result_list = [biggest_plays, biggest_total_wr, biggest_red_wr, biggest_black_wr, worst_total_wr, worst_against_wr, best_against_wr]
     return result_list
 
 
@@ -18,14 +17,13 @@ def most_play(total_dict, nickname):
     counter = 0
     clean_nickname = unicodedata.normalize("NFKD", nickname).strip().lower()
     for key, value in sorted_list.items():
-        clean_key = unicodedata.normalize("NFKD", nickname).strip().lower()
+        clean_key = unicodedata.normalize("NFKD", key).strip().lower()
+        if clean_key == clean_nickname:
+            continue
         if counter == 3:
             break
-        # if clean_key == clean_nickname:
-        #     continue
         result.append(f'{key}: {value[0]}')
         counter += 1
-
     return result
 
 
@@ -49,7 +47,7 @@ def best_mono(total_dict):
             result_dict[key] = [calculate_winrate(wins, all_games - wins), all_games]
         range_count += 1
 
-    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1], reverse=True))
+    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: (item[1][0], item[1][1]), reverse=True))
     counter = 0
     for key, value in sorted_dict.items():
         if counter == 3:
@@ -57,7 +55,7 @@ def best_mono(total_dict):
         result_list_good.append(f'{key}: винрейт: {value[0]}%, игр: {value[1]}')
         counter += 1
 
-    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1]))
+    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: (item[1][0], -item[1][1])))
     counter = 0
     for key, value in sorted_dict.items():
         if counter == 3:
@@ -86,7 +84,7 @@ def best_mono_red(total_dict):
             result_dict[key] = [calculate_winrate(wins, all_games - wins), all_games]
         range_counter += 1
 
-    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1], reverse=True))
+    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: (item[1][0], item[1][1]), reverse=True))
     counter = 0
     for key, value in sorted_dict.items():
         if counter == 3:
@@ -115,7 +113,7 @@ def best_mono_black(total_dict):
             result_dict[key] = [calculate_winrate(wins, all_games - wins), all_games]
         range_counter += 1
 
-    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1], reverse=True))
+    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: (item[1][0], item[1][1]), reverse=True))
     counter = 0
     for key, value in sorted_dict.items():
         if counter == 3:
@@ -144,8 +142,7 @@ def best_against(total_dict):
         if all_games is not None and wins is not None:
             result_dict[key] = [calculate_winrate(wins, all_games - wins), all_games]
         range_counter += 1
-
-    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1], reverse=True))
+    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: (item[1][0], item[1][1]), reverse=True))
     counter = 0
     for key, value in sorted_dict.items():
         if counter == 3:
@@ -153,7 +150,7 @@ def best_against(total_dict):
         result_list_good.append(f'{key}: винрейт: {value[0]}% игр: {value[1]}')
         counter += 1
 
-    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: item[1]))
+    sorted_dict = OrderedDict(sorted(result_dict.items(), key=lambda item: (item[1][0], item[1][1])))
     counter = 0
     for key, value in sorted_dict.items():
         if counter == 3:

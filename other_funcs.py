@@ -3,8 +3,6 @@ import unicodedata
 import requests
 from bs4 import BeautifulSoup
 from fake_headers import Headers
-from datetime import datetime
-import pprint
 
 def get_headers():
     headers = Headers(browser='firefox', os='win')
@@ -50,6 +48,8 @@ def game_list_format(game_list, nickname):
 
     if exceptional_result:
         exceptional_result = exceptional_result[0]
+    else:
+        exceptional_result = [None, None, '', None, '']
 
     processed_results = []
 
